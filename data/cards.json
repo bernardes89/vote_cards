@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "id": 1,
+    "name": "Dragon",
+    "price": 50,
+    "image": "images/dragon.png"
+  },
+  {
+    "id": 2,
+    "name": "Knight",
+    "price": 30,
+    "image": "images/knight.png"
+  }
+]

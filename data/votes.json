@@ -1,1 +1,6 @@
-[]
+[
+  {
+    "tournamentId": 123,
+    "playerId": 1
+  }
+]

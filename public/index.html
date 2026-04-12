@@ -1,29 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Card Voting Game</title>
+    <title>Card Game</title>
 </head>
 <body>
 
-<h1>Card Voting Game</h1>
+<div id="app"></div>
 
-<input id="username" placeholder="Username">
-<button onclick="createPlayer()">Create Player</button>
-
-<script>
-async function createPlayer() {
-    const username = document.getElementById('username').value;
-
-    const res = await fetch('/players', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username })
-    });
-
-    const data = await res.json();
-    console.log(data);
-}
-</script>
+<script src="app.js"></script>
 
 </body>
 </html>
