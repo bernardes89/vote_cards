@@ -270,15 +270,8 @@ http://localhost:3000
 
 ## 🔥 Future Improvements
 
-### Backend
-
-* Password hashing (`bcrypt`)
-* JWT authentication
-* Database (MongoDB or PostgreSQL)
-
 ### Frontend
 
-* Modern UI (React / Vue)
 * Responsive design
 * Better UX
 
