@@ -4,24 +4,45 @@
     <title>Card Game</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
-        #app { max-width: 800px; margin: 0 auto; }
-        button { padding: 10px; margin: 5px; cursor: pointer; }
-        input { padding: 8px; margin: 5px; }
-        .card { border: 1px solid #ccc; padding: 10px; margin: 10px; display: inline-block; width: calc(50% - 20px); box-sizing: border-box; }
-        @media (max-width: 600px) { .card { width: 100%; } }
-        .tournament-view { display: flex; justify-content: space-around; flex-wrap: wrap; }
-        .tournament-view > div { flex: 1; min-width: 200px; text-align: center; }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f8f8f8; color: #222; }
+        #container { max-width: 1100px; margin: 0 auto; }
+        #topbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 12px 0; border-bottom: 1px solid #ddd; margin-bottom: 20px; }
+        .topbar-left { display: flex; align-items: center; gap: 12px; }
+        .avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; background: #ddd; display: inline-block; }
+        .avatar-placeholder { width: 48px; height: 48px; border-radius: 50%; background: #007bff; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; text-transform: uppercase; }
+        .topbar-user { display: flex; flex-direction: column; }
+        .topbar-user strong { font-size: 1rem; }
+        .topbar-nav { display: flex; flex-wrap: wrap; gap: 8px; }
+        button { padding: 10px 14px; margin: 0; cursor: pointer; border: 1px solid #ddd; background: #fff; border-radius: 8px; transition: background .2s, border-color .2s; }
+        button:hover { background: #f1f1f1; }
+        input, select { padding: 10px; margin: 5px 0; width: 100%; max-width: 400px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+        .grid { display: grid; gap: 16px; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+        .card-small, .tournament-card, .player-row { border: 1px solid #ccc; border-radius: 12px; padding: 14px; background: #fff; }
+        .card-small img, .tournament-card img { width: 100%; border-radius: 10px; }
+        .card-small p, .tournament-card p { margin: 6px 0; font-size: 0.92rem; }
+        .card-small strong { display: block; margin-bottom: 8px; }
+        .selected-card { border-color: #007bff; box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2); }
+        .tournament-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+        .player-row { display: grid; grid-template-columns: 1fr auto auto auto; align-items: center; gap: 12px; }
+        .player-row div { font-size: 0.95rem; }
+        .section-title { margin-top: 0; }
+        .small-note { font-size: 0.9rem; color: #555; }
+        @media (max-width: 760px) {
+            .player-row { grid-template-columns: 1fr; }
+            .topbar { flex-direction: column; align-items: stretch; }
+            .topbar-nav { justify-content: center; }
+        }
     </style>
 </head>
 <body>
-
-<div id="app">
-    <h1>Loading Card Voting Game...</h1>
-    <p>Please wait while the application loads.</p>
+<div id="container">
+    <div id="topbar"></div>
+    <div id="content">
+        <h1>Loading Card Voting Game...</h1>
+        <p>Please wait while the application loads.</p>
+    </div>
 </div>
-
 <script src="app.js"></script>
-
 </body>
 </html>

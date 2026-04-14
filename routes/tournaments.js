@@ -19,10 +19,16 @@ router.get('/running', (req, res) => {
     res.json(tournaments);
 });
 
+router.get('/finished', (req, res) => {
+    const tournaments = tournamentService.getFinishedTournaments();
+    res.json(tournaments);
+});
+
 router.post('/vote', (req, res) => {
     const { tournamentId, voterId, votedCardId } = req.body;
-    tournamentService.vote(tournamentId, voterId, votedCardId);
-    res.json({ success: true });
+    const result = tournamentService.vote(tournamentId, voterId, votedCardId);
+    if (result.error) return res.status(400).json({ error: result.error });
+    res.json(result);
 });
 
 router.get('/:id', (req, res) => {

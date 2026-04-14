@@ -198,6 +198,28 @@ The frontend is a simple Single Page Application built with vanilla JavaScript.
 Features:
 
 * Login / Register UI
+* Persistent top menu with avatar, username, credits, and quick navigation
+* Responsive layout for mobile and desktop
+* Tournament entry screen with type selection and card selection in a single view
+* Running tournament voting UI and finished tournament details page
+* Player settings screen to update username, password, and avatar
+
+---
+
+## 🔧 Recent updates
+
+These adjustments were added to support the latest game flow and keep the UI consistent:
+
+* Tournament types now include `beauty`, `charm`, and `kind`.
+* Players can only join tournaments when they are not already participating in that tournament.
+* Running tournaments exclude the current player, and participants cannot vote on their own tournament.
+* Finished tournaments can now be viewed with winning card details.
+* Store prevents buying the same card twice and updates credits immediately in the top bar.
+* Deck view now shows cards in a responsive 4-column layout with card attributes.
+* Player ranking now shows total wins and losses, sorted by wins descending and losses ascending.
+* Player profile settings support username, password, and avatar updates.
+* Logout returns the player to the login/register screen.
+
 * Dashboard
 * Store (buy cards)
 * Deck (view owned cards)

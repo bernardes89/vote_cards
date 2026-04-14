@@ -1,16 +1,24 @@
 [
-{
+  {
     "id": 1,
     "username": "Marco",
     "password": "123",
     "credits": 1000,
-    "cards": []
+    "cards": [],
+    "wins": 0,
+    "losses": 0,
+    "avatar": ""
   },
   {
     "id": 1776202542543,
     "username": "Raithunder",
     "password": "farrusca",
-    "credits": 1000,
-    "cards": []
+    "credits": 500,
+    "cards": [
+      1
+    ],
+    "wins": 0,
+    "losses": 0,
+    "avatar": ""
   }
 ]

@@ -4,14 +4,20 @@ const router = express.Router();
 const { read } = require('../services/storage');
 
 router.get('/', (req, res) => {
-    const tournaments = read('./data/tournaments.json');
+    const players = read('./data/players.json');
 
-    const ranking = {};
+    const ranking = players.map(p => ({
+        id: p.id,
+        username: p.username,
+        credits: p.credits || 0,
+        wins: p.wins || 0,
+        losses: p.losses || 0,
+        avatar: p.avatar || ''
+    }));
 
-    tournaments.forEach(t => {
-        if (t.winner) {
-            ranking[t.winner] = (ranking[t.winner] || 0) + 1;
-        }
+    ranking.sort((a, b) => {
+        if (b.wins !== a.wins) return b.wins - a.wins;
+        return a.losses - b.losses;
     });
 
     res.json(ranking);

@@ -26,6 +26,10 @@ router.post('/buy', (req, res) => {
         return res.status(400).json({ error: 'Invalid data' });
     }
 
+    if ((player.cards || []).includes(cardId)) {
+        return res.status(400).json({ error: 'You already own this card' });
+    }
+
     if ((player.credits || 0) < card.price) {
         return res.status(400).json({ error: 'Not enough credits' });
     }

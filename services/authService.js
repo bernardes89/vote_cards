@@ -2,7 +2,32 @@ const { read, write } = require('./storage');
 
 const file = './data/players.json';
 
-function register(username, password) {
+function normalizePlayer(player) {
+    let changed = false;
+    if (player.credits === undefined) {
+        player.credits = 1000;
+        changed = true;
+    }
+    if (!Array.isArray(player.cards)) {
+        player.cards = [];
+        changed = true;
+    }
+    if (player.wins === undefined) {
+        player.wins = 0;
+        changed = true;
+    }
+    if (player.losses === undefined) {
+        player.losses = 0;
+        changed = true;
+    }
+    if (player.avatar === undefined) {
+        player.avatar = '';
+        changed = true;
+    }
+    return changed;
+}
+
+function register(username, password, avatar = '') {
     const players = read(file);
 
     if (players.find(p => p.username === username)) {
@@ -14,7 +39,10 @@ function register(username, password) {
         username,
         password,
         credits: 1000,
-        cards: []
+        cards: [],
+        wins: 0,
+        losses: 0,
+        avatar: avatar || ''
     };
 
     players.push(newUser);
@@ -31,6 +59,10 @@ function login(username, password) {
     );
 
     if (!user) throw new Error('Invalid credentials');
+
+    if (normalizePlayer(user)) {
+        write(file, players);
+    }
 
     return user;
 }
