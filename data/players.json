@@ -3,7 +3,14 @@
     "id": 1,
     "username": "Marco",
     "password": "123",
-    "coins": 100,
+    "credits": 1000,
     "cards": []
+  },
+  {
+    "id": 1776202542543,
+    "username": "Raithunder",
+    "password": "farrusca",
+    "credits": 1000,
+    "deck": []
   }
 ]

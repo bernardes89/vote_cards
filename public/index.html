@@ -2,10 +2,24 @@
 <html>
 <head>
     <title>Card Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+        #app { max-width: 800px; margin: 0 auto; }
+        button { padding: 10px; margin: 5px; cursor: pointer; }
+        input { padding: 8px; margin: 5px; }
+        .card { border: 1px solid #ccc; padding: 10px; margin: 10px; display: inline-block; width: calc(50% - 20px); box-sizing: border-box; }
+        @media (max-width: 600px) { .card { width: 100%; } }
+        .tournament-view { display: flex; justify-content: space-around; flex-wrap: wrap; }
+        .tournament-view > div { flex: 1; min-width: 200px; text-align: center; }
+    </style>
 </head>
 <body>
 
-<div id="app"></div>
+<div id="app">
+    <h1>Loading Card Voting Game...</h1>
+    <p>Please wait while the application loads.</p>
+</div>
 
 <script src="app.js"></script>
 

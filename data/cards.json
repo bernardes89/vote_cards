@@ -2,13 +2,19 @@
   {
     "id": 1,
     "name": "Dragon",
-    "price": 50,
-    "image": "images/dragon.png"
+    "price": 500,
+    "image": "imgs/dragon.png",
+    "beauty": 8,
+    "charm": 5,
+    "kind": 3
   },
   {
     "id": 2,
     "name": "Knight",
-    "price": 30,
-    "image": "images/knight.png"
+    "price": 500,
+    "image": "imgs/knight.png",
+    "beauty": 6,
+    "charm": 9,
+    "kind": 7
   }
 ]

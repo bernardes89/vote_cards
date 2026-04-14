@@ -20,3 +20,8 @@ const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
+
+// Check tournament timeouts every minute
+setInterval(() => {
+    require('./services/tournamentService').checkTimeouts();
+}, 60 * 1000);

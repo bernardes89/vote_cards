@@ -13,7 +13,8 @@ function register(username, password) {
         id: Date.now(),
         username,
         password,
-        deck: []
+        credits: 1000,
+        cards: []
     };
 
     players.push(newUser);

@@ -26,11 +26,11 @@ router.post('/buy', (req, res) => {
         return res.status(400).json({ error: 'Invalid data' });
     }
 
-    if (player.coins < card.price) {
-        return res.status(400).json({ error: 'Not enough coins' });
+    if ((player.credits || 0) < card.price) {
+        return res.status(400).json({ error: 'Not enough credits' });
     }
 
-    player.coins -= card.price;
+    player.credits -= card.price;
     player.cards.push(cardId);
 
     write(playersFile, players);
