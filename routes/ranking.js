@@ -9,15 +9,21 @@ router.get('/', (req, res) => {
     const ranking = players.map(p => ({
         id: p.id,
         username: p.username,
-        credits: p.credits || 0,
-        wins: p.wins || 0,
-        losses: p.losses || 0,
-        avatar: p.avatar || ''
+        avatar: p.avatar || '',
+        tournamentWins: p.wins || 0,
+        tournamentLosses: p.losses || 0,
+        ragingWins: p.ragingWins || 0,
+        ragingLosses: p.ragingLosses || 0
     }));
 
+    ranking.forEach(p => {
+        p.totalWins = p.tournamentWins + p.ragingWins;
+        p.totalLosses = p.tournamentLosses + p.ragingLosses;
+    });
+
     ranking.sort((a, b) => {
-        if (b.wins !== a.wins) return b.wins - a.wins;
-        return a.losses - b.losses;
+        if (b.totalWins !== a.totalWins) return b.totalWins - a.totalWins;
+        return a.totalLosses - b.totalLosses;
     });
 
     res.json(ranking);

@@ -19,6 +19,11 @@ router.get('/running', (req, res) => {
     res.json(tournaments);
 });
 
+router.get('/my-tournaments/:playerId', (req, res) => {
+    const tournaments = tournamentService.getTournamentsByPlayer(req.params.playerId);
+    res.json(tournaments);
+});
+
 router.get('/finished', (req, res) => {
     const tournaments = tournamentService.getFinishedTournaments();
     res.json(tournaments);

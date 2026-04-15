@@ -22,6 +22,8 @@ function create(username, password) {
         cards: [],
         wins: 0,
         losses: 0,
+        ragingWins: 0,
+        ragingLosses: 0,
         avatar: ''
     };
 

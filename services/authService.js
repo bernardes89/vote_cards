@@ -20,6 +20,14 @@ function normalizePlayer(player) {
         player.losses = 0;
         changed = true;
     }
+    if (player.ragingWins === undefined) {
+        player.ragingWins = 0;
+        changed = true;
+    }
+    if (player.ragingLosses === undefined) {
+        player.ragingLosses = 0;
+        changed = true;
+    }
     if (player.avatar === undefined) {
         player.avatar = '';
         changed = true;
@@ -42,6 +50,8 @@ function register(username, password, avatar = '') {
         cards: [],
         wins: 0,
         losses: 0,
+        ragingWins: 0,
+        ragingLosses: 0,
         avatar: avatar || ''
     };
 

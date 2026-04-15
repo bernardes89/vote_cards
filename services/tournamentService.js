@@ -46,6 +46,15 @@ function getRunningTournaments(excludePlayerId) {
     );
 }
 
+function getTournamentsByPlayer(playerId) {
+    const tournaments = read(file);
+    playerId = Number(playerId);
+    return tournaments.filter(t =>
+        t.status === 'active' &&
+        (t.player1 === playerId || t.player2 === playerId)
+    );
+}
+
 function getFinishedTournaments() {
     const tournaments = read(file);
     return tournaments.filter(t => t.status === 'finished');
@@ -80,6 +89,14 @@ function getTournamentDetails(tournamentId) {
     return tournaments.find(t => t.id == tournamentId);
 }
 
+function isCardInTournament(cardId) {
+    const tournaments = read(file);
+    return tournaments.some(t => 
+        (t.card1 === cardId || t.card2 === cardId) && 
+        (t.status === 'active' || t.status === 'pending')
+    );
+}
+
 function checkTimeouts() {
     const tournaments = read(file);
     const now = Date.now();
@@ -88,9 +105,12 @@ function checkTimeouts() {
     for (let i = tournaments.length - 1; i >= 0; i--) {
         const t = tournaments[i];
         if (t.status === 'pending' && now - t.startTime > 5 * 60 * 1000) {
-            tournaments.splice(i, 1);
+            // 1-player timeout: move to finished without recording win/loss
+            t.status = 'finished';
+            t.winner = null;
             changed = true;
         } else if (t.status === 'active' && now > t.endTime) {
+            // 2-player tournament: determine winner by votes
             const votes1 = t.votes.filter(v => v.votedCardId == t.card1).length;
             const votes2 = t.votes.filter(v => v.votedCardId == t.card2).length;
             if (votes1 > votes2) {
@@ -136,4 +156,4 @@ function updatePlayerRecord(winnerId, loserId) {
     write('./data/players.json', players);
 }
 
-module.exports = { enterTournament, getRunningTournaments, getFinishedTournaments, vote, getTournamentDetails, checkTimeouts };
+module.exports = { enterTournament, getRunningTournaments, getTournamentsByPlayer, getFinishedTournaments, vote, getTournamentDetails, checkTimeouts, isCardInTournament };

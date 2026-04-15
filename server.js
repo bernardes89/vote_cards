@@ -15,13 +15,29 @@ app.use('/auth', require('./routes/auth'));
 app.use('/store', require('./routes/store'));
 app.use('/deck', require('./routes/deck'));
 app.use('/ranking', require('./routes/ranking'));
+app.use('/farming', require('./routes/farming'));
+app.use('/raging-battles', require('./routes/ragingBattles'));
 
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
 
+// Initialize card scanner
+const cardScannerService = require('./services/cardScannerService');
+cardScannerService.startScanner();
+
 // Check tournament timeouts every minute
 setInterval(() => {
     require('./services/tournamentService').checkTimeouts();
+}, 60 * 1000);
+
+// Check farming progress every minute
+setInterval(() => {
+    require('./services/farmingService').checkFarmingTimeouts();
+}, 60 * 1000);
+
+// Check raging battles every minute
+setInterval(() => {
+    require('./services/ragingBattlesService').checkBattleTimeouts();
 }, 60 * 1000);
