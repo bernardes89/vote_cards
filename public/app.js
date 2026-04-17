@@ -27,10 +27,9 @@ function renderTopbar() {
         </div>
         <div class="topbar-nav">
             <button onclick="showDashboard()">Home</button>
-            <button onclick="showTournamentEntry()">Tournaments</button>
-            <button onclick="viewRunningTournaments()">Running</button>
+            <button onclick="showTournamentEntry()">Enter into Tournament</button>
+            <button onclick="viewRunningTournaments()">Running Tournaments</button>
             <button onclick="viewMyTournaments()">My Tournaments</button>
-            <button onclick="viewFinishedTournaments()">Finished</button>
             <button onclick="showFarming()">Farming</button>
             <button onclick="showRagingBattles()">Raging Battles</button>
             <button onclick="showStore()">Store</button>
@@ -357,16 +356,30 @@ async function viewMyTournaments() {
     if (myTournaments.length) {
         html += `<div class="grid">`;
         myTournaments.forEach(t => {
-            const remainTime = Math.max(0, Math.floor((t.endTime - Date.now()) / 1000));
             const card1 = allCards.find(c => c.id == t.card1);
-            const card2 = allCards.find(c => c.id == t.card2);
+            const card2 = t.card2 ? allCards.find(c => c.id == t.card2) : null;
+            
+            let timeRemaining, endTime;
+            if (t.status === 'pending') {
+                // For pending tournaments, show time until timeout (5 minutes from start)
+                endTime = t.startTime + 5 * 60 * 1000;
+            } else {
+                // For active tournaments, show time until tournament ends
+                endTime = t.endTime;
+            }
+            timeRemaining = Math.max(0, Math.floor((endTime - Date.now()) / 1000));
+            
+            const status = t.status === 'pending' ? 'waiting' : 'running';
+            const opponentCardName = t.player1 === window.currentUser.id 
+                ? (card2 ? card2.name : 'Waiting for opponent...') 
+                : (card1 ? card1.name : 'Unknown');
 
             html += `
                 <div class="tournament-card" id="my-tournament-${t.id}">
                     <p><strong>Type:</strong> ${t.type}</p>
-                    <p><strong>Status:</strong> ${t.status}</p>
-                    <p><strong>Time Remaining:</strong> <span id="timer-${t.id}">${formatTime(remainTime)}</span></p>
-                    <p>VS: ${t.player1 === window.currentUser.id ? (card2 ? card2.name : 'Unknown') : (card1 ? card1.name : 'Unknown')}</p>
+                    <p><strong>Status:</strong> ${status}</p>
+                    <p><strong>Time Remaining:</strong> <span id="timer-${t.id}">${formatTime(timeRemaining)}</span></p>
+                    <p>VS: ${opponentCardName}</p>
                     <button onclick="viewTournament(${t.id})">View Details</button>
                 </div>
             `;
@@ -379,7 +392,8 @@ async function viewMyTournaments() {
     renderContent(html);
 
     myTournaments.forEach(t => {
-        startCountdown(t.id, t.endTime);
+        const endTime = t.status === 'pending' ? (t.startTime + 5 * 60 * 1000) : t.endTime;
+        startCountdown(t.id, endTime);
     });
 }
 
@@ -415,8 +429,40 @@ async function viewTournament(tournamentId) {
     const allCards = await cardsRes.json();
     const card1 = allCards.find(c => c.id == tournament.card1) || { name: 'Unknown', image: '', beauty: 0, charm: 0, kind: 0 };
     const card2 = allCards.find(c => c.id == tournament.card2) || { name: 'Unknown', image: '', beauty: 0, charm: 0, kind: 0 };
+    
+    // Fetch player names
+    const player1Res = await fetch(`/players/${tournament.player1}`);
+    const player1 = await player1Res.json();
+    let player2 = null;
+    if (tournament.player2) {
+        const player2Res = await fetch(`/players/${tournament.player2}`);
+        player2 = await player2Res.json();
+    }
+    
     const canVote = tournament.status === 'active' && ![tournament.player1, tournament.player2].includes(window.currentUser.id);
     const alreadyVoted = tournament.votes && tournament.votes.some(v => v.voterId == window.currentUser.id);
+
+    let player2Content = '';
+    if (tournament.player2 && player2) {
+        player2Content = `
+            <div class="card-small">
+                <p><strong>Player: ${player2.username}</strong></p>
+                <img src="${card2.image}" alt="${card2.name}">
+                <strong>${card2.name}</strong>
+                <p>Beauty: ${card2.beauty}</p>
+                <p>Charm: ${card2.charm}</p>
+                <p>Kind: ${card2.kind}</p>
+                ${canVote && !alreadyVoted ? `<button onclick="voteOnTournament(${tournament.id}, ${tournament.card2})">Vote for this card</button>` : ''}
+            </div>
+        `;
+    } else {
+        player2Content = `
+            <div class="card-small" style="opacity: 0.5;">
+                <p><strong>Waiting for opponent...</strong></p>
+                <p>Tournament status: <strong>${tournament.status}</strong></p>
+            </div>
+        `;
+    }
 
     renderContent(`
         <h2>Tournament Details</h2>
@@ -425,6 +471,7 @@ async function viewTournament(tournamentId) {
         ${tournament.status === 'active' ? `<p><strong>Time Remaining:</strong> <span id="detail-timer">${formatTime(Math.max(0, Math.floor((tournament.endTime - Date.now()) / 1000)))}</span></p>` : ''}
         <div class="tournament-cards">
             <div class="card-small">
+                <p><strong>Player: ${player1.username}</strong></p>
                 <img src="${card1.image}" alt="${card1.name}">
                 <strong>${card1.name}</strong>
                 <p>Beauty: ${card1.beauty}</p>
@@ -432,14 +479,7 @@ async function viewTournament(tournamentId) {
                 <p>Kind: ${card1.kind}</p>
                 ${canVote && !alreadyVoted ? `<button onclick="voteOnTournament(${tournament.id}, ${tournament.card1})">Vote for this card</button>` : ''}
             </div>
-            <div class="card-small">
-                <img src="${card2.image}" alt="${card2.name}">
-                <strong>${card2.name}</strong>
-                <p>Beauty: ${card2.beauty}</p>
-                <p>Charm: ${card2.charm}</p>
-                <p>Kind: ${card2.kind}</p>
-                ${canVote && !alreadyVoted ? `<button onclick="voteOnTournament(${tournament.id}, ${tournament.card2})">Vote for this card</button>` : ''}
-            </div>
+            ${player2Content}
         </div>
         ${tournament.status === 'finished' ? `<p><strong>Winner:</strong> ${tournament.winner ? 'Player ' + tournament.winner : 'Tie'}</p>` : ''}
         ${alreadyVoted && canVote ? `<p style="color: orange;">You have already voted in this tournament.</p>` : ''}
@@ -460,12 +500,19 @@ async function viewFinishedTournament(tournamentId) {
     const allCards = await cardsRes.json();
     const card1 = allCards.find(c => c.id == tournament.card1) || { name: 'Unknown', image: '', beauty: 0, charm: 0, kind: 0 };
     const card2 = allCards.find(c => c.id == tournament.card2) || { name: 'Unknown', image: '', beauty: 0, charm: 0, kind: 0 };
+    
+    // Fetch player names
+    const player1Res = await fetch(`/players/${tournament.player1}`);
+    const player1 = await player1Res.json();
+    const player2Res = await fetch(`/players/${tournament.player2}`);
+    const player2 = await player2Res.json();
 
     renderContent(`
         <h2>Finished Tournament Details</h2>
         <p><strong>Type:</strong> ${tournament.type}</p>
         <div class="tournament-cards">
             <div class="card-small" style="border: ${tournament.winner === tournament.player1 ? '3px solid gold' : '2px solid #ccc'};">
+                <p><strong>Player: ${player1.username}</strong></p>
                 <img src="${card1.image}" alt="${card1.name}">
                 <strong>${card1.name}</strong>
                 <p>Beauty: ${card1.beauty}</p>
@@ -474,6 +521,7 @@ async function viewFinishedTournament(tournamentId) {
                 <p>${tournament.winner === tournament.player1 ? '<strong style="color: gold;">WINNER</strong>' : tournament.winner === tournament.player2 ? '<strong style="color: red;">LOST</strong>' : '<strong>TIE</strong>'}</p>
             </div>
             <div class="card-small" style="border: ${tournament.winner === tournament.player2 ? '3px solid gold' : '2px solid #ccc'};">
+                <p><strong>Player: ${player2.username}</strong></p>
                 <img src="${card2.image}" alt="${card2.name}">
                 <strong>${card2.name}</strong>
                 <p>Beauty: ${card2.beauty}</p>

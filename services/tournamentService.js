@@ -50,7 +50,7 @@ function getTournamentsByPlayer(playerId) {
     const tournaments = read(file);
     playerId = Number(playerId);
     return tournaments.filter(t =>
-        t.status === 'active' &&
+        (t.status === 'active' || t.status === 'pending') &&
         (t.player1 === playerId || t.player2 === playerId)
     );
 }
